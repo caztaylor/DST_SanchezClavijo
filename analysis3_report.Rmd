@@ -1,0 +1,46 @@
+---
+title: "Analysis3"
+author: "Caz Taylor"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+bibliography: refsA.bib
+---
+
+```{r setup, include=FALSE}
+rm(list=ls())
+library(tidyverse)
+knitr::opts_chunk$set(echo = FALSE)
+
+```
+
+# Project A - part 3 from Data and Software Tools Course
+
+Analysis of individual characteristics of dataset that accompanies [@Clavijo:2019dd]
+
+
+```{r readdata}
+ind_chrs<-read.csv("./data/SanchezClavijo_etal2019_individual_characteristics.csv",stringsAsFactors=TRUE)
+
+```
+
+## Summary Table of All Species
+ 
+```{r table1}
+ind_chrs_spp_summary<-ind_chrs %>% group_by(Species) %>% summarize(n=n(),BodyMass=mean(BM,na.rm=TRUE),Muscle=mean(MUS,na.rm=TRUE),WingLength=mean(WC,na.rm=TRUE)) %>% arrange(desc(n))
+knitr::kable(ind_chrs_spp_summary,digits=1,caption="") 
+```
+
+## Body Mass in Different Habitats
+
+```{r table2}
+
+bodyMassHab<-ind_chrs %>% group_by(Species,Habitat) %>% summarize(n=n(),BodyMass=mean(BM,na.rm=TRUE)) %>% pivot_wider(id_cols=Species,names_from=Habitat,values_from = BodyMass) %>% mutate(Diff.BM = 100 * ((FOREST - COFFEE) / COFFEE)) %>% arrange(Diff.BM)
+
+knitr::kable(bodyMassHab,digits=1,caption="table 2") 
+
+```
+
+## References  
+
